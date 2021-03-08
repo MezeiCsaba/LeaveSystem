@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/main}">
+
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="description" content="">
+
+
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
+	crossorigin="anonymous">
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+	type="text/javascript"></script>
+<script crossorigin="anonymous"
+	integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+	type="text/javascript"></script>
+<script crossorigin="anonymous"
+	integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+	src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+	type="text/javascript"></script>
+<script crossorigin="anonymous" src="../static/js/main.js"
+	th:src="@{../js/main.js}" type="text/javascript"></script>
+
+
+<script type="text/javascript"
+	src="https://www.gstatic.com/charts/loader.js"></script>
+<script th:inline="javascript" type="text/javascript">
+    
+  
+/*<![CDATA[*/
+
+	var holidayEvents = /* [[${holidayEvents}]]*/null; 
+
+/*]]>*/
+       
+    google.charts.load("current", {	packages : [ "calendar" ]});
+  	google.charts.setOnLoadCallback(drawChart);
+
+  	function drawChart() {
+
+  		var dataTable = new google.visualization.DataTable();
+  		dataTable.addColumn({
+  			type : 'date',
+  			id : 'Date'
+  		});
+  		dataTable.addColumn({
+  			type : 'number',
+  			id : 'workday'
+  		});
+  		for (var i in holidayEvents){
+  			if (holidayEvents[i]!=0){
+  			dataTable.addRow([new Date(i),holidayEvents[i]]);}
+  		}
+
+  		var chart = new google.visualization.Calendar(document
+  				.getElementById('calendar_basic'));
+
+  		var options = {
+  			title : "Szabadságok ",
+  			height : 230,
+  			legend:'none',
+  			calendar : {
+  				cellSize : 20,
+  				underMonthSpace : 10,
+  				dayOfWeekRightSpace : 10,
+  				daysOfWeek : 'SMTWTFS',
+  				cellColor : {
+  					stroke : '#76a7fa',
+  					strokeOpacity : 0.5,
+  					strokeWidth : 1,
+  				}
+  			}
+  		};
+  		 google.visualization.events.addListener(chart, 'ready', function () {
+  		    $($('#calendar_basic text')[1]).text('szabadság');
+  		    $($('#calendar_basic text')[2]).text('');
+  		    $($('#calendar_basic text')[3]).text('munkaszünet');
+  		  
+  		  });
+  		chart.draw(dataTable, options);
+  	}
+      
+      
+    </script>
+
+
+<title>Szabadságok kezelése</title>
+
+</head>
+
+<body>
+
+
+	<div layout:fragment="loginContent">
+
+		<div th:object="${holidayEvents}"
+			class="container justify-content-center col-lg-9">
+
+			<div id="calendar_basic"
+				style="width: 1200px; height: 230px; margin: auto;"></div>
+
+		</div>
+		<div class="container">
+
+			<div
+				class="col-lg-11 ms-3 border border-primary rounded-end shadow px-4 py-2 bg-white rounded justify-content-center">
+				<div >
+					<th:block th:if="${newEventError!=null}">
+
+						<div class="modal" tabindex="-1" role="dialog" id="dateErrorModal">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title">Dátum hiba</h5>
+									</div>
+									<div class="modal-body">
+										<div th:switch="${newEventError}">
+											<strong>Figyelem!</strong> <br> <br>
+											<p th:case="'exist'">Erre az időszakra már van szabadság
+												felvéve!</p>
+											<p th:case="'wrongDateFormat'">A végdátum megelőzi a
+												kezdő dátumot!</p>
+											<p th:case="'noWorkDay'">A megadott időszakra nem esik
+												munkanap!</p>
+											<p th:case="'overLoadLeave'">Nincs elegendő szabadság!</p>
+										</div>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-secondary"
+											data-dismiss="modal">Close</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<script>
+							$('#dateErrorModal').modal('show');
+						</script>
+					</th:block>
+
+
+					<table class="table table-hover text-center">
+						<thead>
+							<tr class="justify-content-center">
+
+								<th>Dátum</th>
+															
+								<th>Státusz</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="anevent : ${events}">
+								<td th:text="${anevent.startDate}"></td>
+								
+								<td th:switch="${anevent.approved}">
+									<span 
+									th:case="-1" data-toggle="tooltip" data-placement="top" title="Elutasítva" >
+									<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" class="bi bi-calendar-x" viewBox="0 0 16 16">
+  <path d="M6.146 7.146a.5.5 0 0 1 .708 0L8 8.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 9l1.147 1.146a.5.5 0 0 1-.708.708L8 9.707l-1.146 1.147a.5.5 0 0 1-.708-.708L7.293 9 6.146 7.854a.5.5 0 0 1 0-.708z"/>
+  <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+</svg>
+									
+									
+									</span> 
+									<span
+									th:case="0" data-toggle="tooltip" data-placement="top" title="Jóváhagyásra vár" >
+									<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="blue" class="bi bi-hourglass-split" viewBox="0 0 16 16">
+  <path d="M2.5 15a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1h-11zm2-13v1c0 .537.12 1.045.337 1.5h6.326c.216-.455.337-.963.337-1.5V2h-7zm3 6.35c0 .701-.478 1.236-1.011 1.492A3.5 3.5 0 0 0 4.5 13s.866-1.299 3-1.48V8.35zm1 0v3.17c2.134.181 3 1.48 3 1.48a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351z"/>
+</svg>
+									</span>
+									<span th:case="1" data-toggle="tooltip" data-placement="top" title="Jóváhagyva" >
+									<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="green" class="bi bi-calendar-check" viewBox="0 0 16 16">
+  <path d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0z"/>
+  <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+</svg>
+
+</span>
+
+								</td>
+								
+								<td><a class="  delBtn"
+									th:href="@{~/delete/(id=${anevent.id})}" data-toggle="tooltip" data-placement="top" title="Törlés">
+										<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" class="bi bi-trash" viewBox="0 0 16 16">
+  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+  <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+</svg>
+
+									</a>
+							</tr>
+							<tr>
+								<td><b>Összesen kivett napok száma:</b></td>
+								<td><b
+									th:text="${sumCarrLeave} +'  (maradt '+ (${sumLeave}-${sumCarrLeave} ) + ' nap)'">
+								</b></td>
+								<td></td>
+							</tr>
+						</tbody>
+					</table>
+						<ul class="nav nav-pills">
+						<th:block th:if="${events.totalPages}>0">
+							<li class="nav-item"
+								th:each="i : ${#numbers.sequence(0,events.totalPages-1)}"><a
+								class="nav-link"
+								th:classappend="${currentPage}==${i}?'active':''"
+								th:href="@{/new_userevent/(page=${i})}" th:text="${i+1}"></a></li>
+						</th:block>
+						
+							<li class="col-lg px-2" style="display:flex; justify-content: flex-end">
+								<button th:if="(${sumLeave}-${sumCarrLeave} )>0"
+								class="btn btn-success mx-3 px-3 nBtn" data-toggle="modal"
+								data-target="#exampleModal">
+								<span  data-toggle="tooltip" data-placement="top" title="Új szabadság">
+
+								<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white" class="bi bi-calendar-plus" viewBox="0 0 16 16">
+  								<path d="M8 7a.5.5 0 0 1 .5.5V9H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V10H6a.5.5 0 0 1 0-1h1.5V7.5A.5.5 0 0 1 8 7z"/>
+  								<path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+								</svg>
+
+								</span>
+								</button>
+								<a type="button" data-toggle="tooltip" data-placement="top" title="Vissza"
+ 									class="btn btn-secondary ms-3 px-3" th:href="@{/}">  <!--  VISSZA -->
+										
+											<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-arrow-return-left" viewBox="0 0 16 16">
+  											<path fill-rule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5z"/>
+											</svg>
+
+								</a>
+							</li>
+						</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="myForm">
+			<form action="#" method="post" th:action="@{/save}">
+				<div aria-hidden="true" aria-labelledby="newEventModalLabel"
+					class="modal fade" id="newEventModal" role="dialog" tabindex="-1">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="exampleModalLabel">Új szabadság</h5>
+
+							</div>
+							<div class="modal-body">
+
+								<div class="form-group">
+									<label class="col-form-label" for="name">startDate</label> <input
+										class="form-control" id="startDate" name="startDate"
+										type="date" required />
+								</div>
+								<div class="form-group">
+									<label class="col-form-label" for="capital">endDate</label> <input
+										class="form-control" id="endDate" name="endDate" type="date"
+										required />
+								</div>
+
+							</div>
+							<div class="modal-footer">
+							
+								<input class="btn btn-primary mx-3" type="submit" value="Mentés" />
+								<button class="btn btn-secondary mx-3" data-dismiss="modal"
+									type="button">Vissza</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+
+		<div aria-hidden="true" aria-labelledby="myModalLabel"
+			class="modal fade" id="myModal" role="dialog" tabindex="-1">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="myModalLabel">Szabadság törlése</h5>
+<!-- 						<button aria-label="Close" class="close" data-dismiss="modal" -->
+<!-- 							type="button"> -->
+<!-- 							<span aria-hidden="true">&times;</span> --> 
+<!-- 						</button> -->
+					</div>
+					<div class="modal-body">
+						<strong>Biztosan törölni szeretnéd ezt a
+							szabadságot?</strong>
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-secondary" data-dismiss="modal"
+							type="button">Mégsem</button>
+						<a class="btn btn-danger" href="" id="delRef">Törlés</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<br>
+
+	</div>
+
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/main}">
+<head>
+</head>
+
+<body>
+
+<!-- <div layout:fragment="loginContent"> -->
+
+<div>
+<br>
+<br>
+
+<h1 th:text = "${error}"></h1>
+<p th:text ="${message}"> </p>
+<p th:text ="${path}"> </p>
+<p th:text ="${status}"> </p>
+<p th:text ="${timestamp}"> </p>
+
+<br>
+<br>
+</div>
+</body>
+</html>

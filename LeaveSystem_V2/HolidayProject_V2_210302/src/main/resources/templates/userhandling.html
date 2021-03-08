@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	layout:decorate="~{layouts/main}">
+
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="description" content="">
+
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
+	crossorigin="anonymous">
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+	type="text/javascript"></script>
+<script crossorigin="anonymous"
+	integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+	type="text/javascript"></script>
+<script crossorigin="anonymous"
+	integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+	src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+	type="text/javascript"></script>
+<script crossorigin="anonymous" src="../static/js/main.js"
+	th:src="@{../js/main.js}" type="text/javascript"></script>
+
+
+
+<title>Felhasználók</title>
+
+</head>
+
+<body>
+
+	<div layout:fragment="loginContent">
+		<br>
+		<br>
+		<br>
+		<div class="container col-lg-11 mt-4">
+			<th:block th:if="${newUserError!=null}">
+				<div class="modal" tabindex="-1" role="dialog" id="userReg">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title text-center">Regisztráció</h5>
+							</div>
+							<div class="modal-body align-center text-center">
+								<p class="text-center" th:if="${newUserError}=='regSucces'">Sikeres
+									Regisztráció!</p>
+								<b class="text-center" th:if="${newUserError}=='regUnSucces'">Ezzel
+									az e-mail címmel már létezik felhasználó!</b>
+								<p class="text-center" th:if="${newUserError}=='updateSucces'">Sikeres
+									adat frissítés!</p>
+
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-warning"
+									data-dismiss="modal">Close</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<script>
+					$('#userReg').modal('show');
+				</script>
+			</th:block>
+
+
+			<div class="container col-lg-6  ">
+
+				<form name="search" th:action="@{/search}" method="POST"
+					class="form-inline">
+					<div class="input-group mb-3">
+						<input type="search" class="form-control" aria-label="serachtext"
+							placeholder="felhasználónév" id="serachtext" name="searchtext">
+						<div class="input-group-prepend ">
+							<button type="submit" style="background-color: yellow"
+								class="input-group-text" id="inputGroup-sizing-default" data-toggle="tooltip" data-placement="top" title="Keres">
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+  <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+</svg>
+
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+			
+			<div class="container col-lg d-flex justify-content-center">
+
+			<form name="userhandling" th:object="${updateuser}"
+				th:action="@{/registration}" method="POST" class="form-group">
+				<div
+					class="col-lg ms-3 border border-primary rounded-end shadow p-3  bg-white rounded "
+					style="width: max-content; height: max-content; margin: auto;">
+					<table class="table table-hover text-center">
+						<thead>
+							<tr class="justify-content-center">
+
+
+								<th><a type="button" class="nav-link" id="namew"
+									th:name="namew"
+									th:href="@{/orderBy(orderBy='name', currentPage=${currentPage})}">Név
+										&nabla; </a></th>
+								<th><a type="button" class="nav-link" id="emailw"
+									th:name="emailw"
+									th:href="@{/orderBy(orderBy='email', currentPage=${currentPage})}">E-mail
+										&nabla;</a></th>
+								<th><a type="button" class="nav-link" id="rolew"
+									th:name="rolew" href="#">Jogosultság</a></th>
+								<th><a type="button" class="nav-link" id="statusw"
+									th:name="statusw"
+									th:href="@{/orderBy(orderBy='status', currentPage= ${currentPage})}">Státusz
+										&nabla;</a></th>
+
+								<th><a sec:authorize="hasAuthority('ADMIN')" type="button"	data-toggle="tooltip" data-placement="top" title="Új felhasználó"
+									href="/registration" class="btn btn-success border border-warning shadow rounded">   <!--  ÚJ FELHASZNÁLÓ -->
+										<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-person-plus" viewBox="0 0 16 16">
+  										<path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+  										<path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"/>
+										</svg>
+
+									</a></th>
+								<th><a type="button" data-toggle="tooltip" data-placement="top" title="Vissza"
+ 									class="btn btn-secondary border border-warning shadow rounded " th:href="@{/}">  <!--  VISSZA -->
+										<strong>
+											<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-arrow-return-left" viewBox="0 0 16 16">
+  											<path fill-rule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5z"/>
+											</svg>
+										</strong>
+								</a></th>
+								<th sec:authorize="hasAuthority('HR')"></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="user: ${users}">
+								<td
+									th:style="(${(user.activationCode==null || user.activationCode.isEmpty()) && user.baseLeave>19} )? 'color: black' : 'color: red' "><span
+									th:text="${user.name}">név</span></td>
+								<td><span th:text="${user.email}">email</span></td>
+								<td><span th:text="${user.roles}">role</span></td>
+								<td><span th:text="${user.status}? 'Aktív': 'Inaktív'">status</span></td>
+
+								<td>
+									<button type="submit" id="id" th:name="id" data-toggle="tooltip" data-placement="top" title="Szerkeszt"
+										class="btn btn-outline px-2" th:field="*{id}"
+										th:value="${user.id}">
+										<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+											fill="blue" class="bi bi-pencil-square"
+											viewBox="0 0 16 16">
+  <path
+												d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+  <path fill-rule="evenodd"
+												d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+</svg>
+									</button>
+								</td>
+
+								<td><a sec:authorize="hasAuthority('HR')" type="button" data-toggle="tooltip" data-placement="top" title="Megtekint"
+									id="view" th:name="view"
+									th:href="@{/userInfoPage/(user.id=${user.id})}"
+									class="btn btn-outline px-2">
+								<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="blue" class="bi bi-eye" viewBox="0 0 16 16">
+  <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+  <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+</svg>
+								</a></td>
+
+							</tr>
+						</tbody>
+					</table>
+					<ul class="nav nav-pills">
+						<li class="nav-item"
+							th:each="i : ${#numbers.sequence(0,users.totalPages-1)}"><a
+							class="nav-link"
+							th:classappend="${currentPage}==${i}?'active':''"
+							th:href="@{/userhandling/(page=${i})}" th:text="${i+1}"></a></li>
+					</ul>
+				</div>
+			</form>
+			</div>
+			<br>
+
+		</div>
+	</div>
+
+
+</body>
+
+</html>

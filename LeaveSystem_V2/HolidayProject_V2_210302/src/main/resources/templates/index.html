@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="hu" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/main}">
+
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, minimum-scale=1">
+
+<meta name="description" content="">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
+	crossorigin="anonymous">
+
+<script type="text/javascript"
+	src="https://www.gstatic.com/charts/loader.js"></script>
+<script th:inline="javascript" type="text/javascript">
+    
+    /*<![CDATA[*/
+
+	var userLeave = /*[[${userLeave}]]*/null; 
+    
+/*]]>*/
+ 
+ 
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChartd);
+
+      function drawChartd() {
+
+        var data = google.visualization.arrayToDataTable([
+          ['típus', 'napok'],
+          ['Kivett napok',    userLeave[0]],
+          ['Maradék napok',    (userLeave[1]-userLeave[0])],
+        
+        ]);
+
+        var options = {
+          title: '',
+          backgroundColor: 'transparent' ,
+          height : 280,
+          pieHole: 0.4,
+//           is3D:true,
+          pieSliceText: 'value',
+          legendTextStyle: {fontSize:14},
+          slices: {0: {color: 'Coral'}, 1: {color: 'CornflowerBlue'}},
+          titleTextStyle : { fontSize:18}
+        };
+        var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
+
+        chart.draw(data, options);
+      }
+      
+    </script>
+
+<title>Főoldal</title>
+
+
+</head>
+
+
+<body>
+
+
+	<div layout:fragment="loginContent">
+<br>
+		<br>
+		<br>
+		<div id="mainDiv" class="row col-lg-8 d-flex justify-content-center p-0 mt-1 mb-2"  style=" width: max-content; margin:auto">
+			<div class=" col-lg-8 " style="width: 750px; margin:auto">
+				<b th:text="${user.name}" style="font-size: 26px; color: darkblue">név</b>
+				<br>
+				<hr style="width: 95%; text-align: center;">
+				Jogosultság: <b th:text="${user.roles}">role</b> <br> E-mail: <b
+					th:text="${user.email}">email</b> <br>
+				<br>
+				<hr style="width: 95%; text-align: center; margin-top: 0;">
+
+				<div class="row justify-content-center">
+					<div class="col-lg-6 ">
+
+						Alapszabadság:&nbsp;<b th:text="${user.baseLeave}">0</b>&nbsp;nap
+						<br> Szülői szabadság:&nbsp;<b
+							th:text="${user.parentalLeave}">0</b>&nbsp;nap <br>
+					</div>
+					<div class="col-lg-6 ">
+
+						Áthozott szabadság:&nbsp;<b th:text="${user.carriedLeave}">0
+							</b>&nbsp;nap <br> Egyéb szabadság:&nbsp;<b
+							th:text="${user.otherLeave}">0</b>&nbsp;nap<br>
+					</div>
+				</div>
+				<hr style="width: 95%; text-align: center;">
+				Jóváhagyó:&nbsp;<b th:text="${approverName}">nincs</b> <br>
+
+			</div>
+			<div th:object="${userLeave}"
+				class=" col-lg-4 m-0 p-0">
+				<!-- 				style=" height: 300px; margin: auto;"> -->
+
+				<div id="donutchart" style="width: max-content; height: max-content; margin: auto ; padding:auto"></div>
+			</div>
+		</div>
+
+			
+			<div id="rowCalendar"
+					class="container border border-primary rounded-end shadow px-2 py-1 bg-white rounded"
+					style="width: max-content; height: max-content; margin: auto ; padding:auto">
+					
+					<div class="row col-lg my-1 ms-1 p-1" style="height: max-content; width: max-content">
+						<table class="row col-lg me-1" style="height: max-content; width: max-content"></table>
+						<table class="row col-lg me-1" style="height: max-content; width: max-content"></table>
+						<table class="row col-lg me-1" style="height: max-content; width: max-content"></table>
+						<table class="row col-lg me-1" style="height: max-content; width: max-content"></table>
+						<table class="row col-lg me-1" style="height: max-content; width: max-content"></table>
+						<table class="row col-lg me-1" style="height: max-content; width: max-content"></table>
+					</div>
+					<div class="row col-lg my-1 ms-1 p-1" style="height: max-content; width: max-content">
+						<table class="row col-lg me-1" style="height: max-content; width: max-content"></table>
+						<table class="row col-lg me-1" style="height: max-content; width: max-content"></table>
+						<table class="row col-lg me-1" style="height: max-content; width: max-content"></table>
+						<table class="row col-lg me-1" style="height: max-content; width: max-content"></table>
+						<table class="row col-lg me-1" style="height: max-content; width: max-content"></table>
+						<table class="row col-lg me-1" style="height: max-content; width: max-content"></table>
+					</div>
+					
+					<script th:inline="javascript" type="text/javascript">
+				    /*<![CDATA[*/
+		
+				    var exEventList = /*[[${exEventList}]]*/{};
+				    var eventList = /*[[${eventList}]]*/{};
+				    var leaveCounter = /*[[${userLeave[0]}]]*/{};
+				    var sumLeave = /*[[${userLeave[1]}]]*/{};
+		
+				    /*]]>*/
+					</script>
+					<script th:inline="javascript" type="text/javascript"
+							src="../static/js/calendarView.js" th:src="@{../js/calendarView.js}"></script>
+					
+				</div>
+
+		</div>
+
+</body>
+</html>
