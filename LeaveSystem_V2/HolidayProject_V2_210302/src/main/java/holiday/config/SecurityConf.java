@@ -30,13 +30,17 @@ public class SecurityConf extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity httpSec) throws Exception {
-		httpSec.authorizeRequests().antMatchers("/css/**", "/js/**", "/images/**", "/pics/**", "/postdata/**")
-				.permitAll().antMatchers("/activation/**", "/changepassword", "/setnewpassword").permitAll()
-				.antMatchers("/error", "calendar/**").permitAll().antMatchers("/adminuserupdatereg", "/userhandling")
-				.hasAnyAuthority("HR", "ADMIN", "USER").antMatchers("/new_userevent", "/newusereventreg")
-				.hasAnyAuthority("USER", "ADMIN", "HR").antMatchers("/users/**", "/registration", "/reg")
-				.hasAnyAuthority("ADMIN", "HR").antMatchers("/events/**", "/calendar", "/userInfoPage/**")
-				.hasAuthority("HR").anyRequest().authenticated().and().formLogin().loginPage("/login").permitAll().and()
+		httpSec.authorizeRequests().antMatchers("/css/**", "/js/**", "/images/**", "/pics/**", "/postdata/**").permitAll()
+				.antMatchers("/activation/**", "/changepassword", "/setnewpassword").permitAll()
+				.antMatchers("/error", "calendar/**").permitAll()
+				.antMatchers("/adminuserupdatereg", "/userhandling").hasAnyAuthority("HR", "ADMIN", "USER")
+				.antMatchers("/new_userevent", "/newusereventreg").hasAnyAuthority("USER", "ADMIN", "HR")
+				.antMatchers("/users/**", "/registration", "/reg", "/userInfoPage/**").hasAnyAuthority("ADMIN", "HR")
+				.antMatchers("/events/**").hasAuthority("HR")
+				.anyRequest().authenticated()
+				.and()
+				.formLogin().loginPage("/login").permitAll()
+				.and()
 				.logout().logoutSuccessUrl("/login?logout").permitAll()
 				.and().csrf().disable().cors();
 
