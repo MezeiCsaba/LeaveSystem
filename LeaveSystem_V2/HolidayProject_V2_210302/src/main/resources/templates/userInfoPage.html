@@ -106,9 +106,8 @@
 						<a type="button" class="btn btn-sm btn-secondary pt-1 m-0"
 							th:href="@{/userhandling}"> <strong>Vissza</strong></a>
 					</div>
-					<p
-						th:if="${(user.activationCode!=null && !user.activationCode.isEmpty())}"
-						style="color: red">(inaktív regisztráció)</p>
+					<b th:if="${(user.activationCode!=null && !user.activationCode.isEmpty())}"
+						style="color: red">(inaktív regisztráció)</b>
 				</div>
 
 				<hr style="width: 95%; text-align: center; margin: 12px 0;">

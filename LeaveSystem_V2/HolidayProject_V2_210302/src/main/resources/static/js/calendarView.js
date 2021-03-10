@@ -55,7 +55,8 @@ function generateTableHead(table, month) {
     row.style.backgroundColor = "lightblue"
     let th = document.createElement("th")
     th.colSpan = "7"
-    let text = document.createTextNode(MONTHS[month])
+    let dateText = ((month==0)? year + ". " : '') + MONTHS[month];
+	text= document.createTextNode(dateText)
     th.appendChild(text)
     row.appendChild(th)
     row = head.insertRow();
