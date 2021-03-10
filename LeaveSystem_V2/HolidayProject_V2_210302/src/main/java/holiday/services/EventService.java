@@ -186,7 +186,7 @@ public class EventService {
 
 		do {
 			if (!isThisWorkDay(startDate, exDates)) {
-				eventMap.put(startDate, 3);
+				eventMap.put(startDate, 4);   // nem munkanap
 			}
 			startDate = startDate.plusDays(1);
 		} while (LocalDate.now().getYear() == startDate.getYear());
@@ -197,8 +197,8 @@ public class EventService {
 			startDate = anevent.getStartDate();
 
 			if (isThisWorkDay(startDate, exDates)) {// ha az adott szabadságnap munkanap, akkor táblába
-
-				eventMap.put(startDate, -7); // az adott dátumra eső szabadság (-7
+				Integer result = ((anevent.getApproved()==-1)? 0:1) * anevent.getDuration();  // ha elutasított kérelem, nem jelenítjük meg
+				eventMap.put(startDate, result); // az adott dátumra eső szabadság (-7
 												// egész nap, -14 délelőtt, -21 délután)
 			}
 

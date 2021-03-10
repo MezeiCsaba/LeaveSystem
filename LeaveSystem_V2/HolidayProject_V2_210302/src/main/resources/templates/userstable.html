@@ -106,9 +106,13 @@
 
 										<th:block
 											th:switch="${usersEvents[user.id].get(#temporals.create((thisYear),(month),(day)))}">
-											<td th:case="3" class="p-0"
+											<td th:case="4" class="p-0"
 												style="width: 16px; background-color: lightgrey"></td>
-											<td th:case="-7" class="p-0"
+											<td th:case="1" class="p-0" title="egész nap"
+												style="width: 16px; background-color: lightblue"></td>
+											<td th:case="2" class="p-0" title="délelőtt"
+												style="width: 16px; background-color: yellow"></td>
+											<td th:case="3" class="p-0" title="délután"
 												style="width: 16px; background-color: lightgreen"></td>
 											<td th:case="*" class="p-0"
 												style="width: 16px; background-color: white"></td>
