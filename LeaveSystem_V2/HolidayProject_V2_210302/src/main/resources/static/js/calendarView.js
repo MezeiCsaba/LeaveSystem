@@ -123,7 +123,7 @@ function generateTableBody(table, month) {
 }
 
 function daysInMonth(month) {
-    return new Date(year, month , 0).getDate()
+    return new Date(year, month+1 , 0).getDate()
 }
 
 
