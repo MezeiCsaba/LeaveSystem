@@ -65,7 +65,7 @@ public class RapiController {
 			Boolean exist = false;
 			for (int j = 0; rEvents.size() > j; j++) {
 				Event event = rEvents.get(j);
-				if (oevent.getId() == event.getId()) {
+				if (oevent.getId().intValue()== event.getId().intValue()) {
 					if (oevent.getDuration() != event.getDuration()) { // a szabadság időtartama megváltozott
 						oevent.setDuration(event.getDuration());
 						eventService.addNewEvent(authUser, event);

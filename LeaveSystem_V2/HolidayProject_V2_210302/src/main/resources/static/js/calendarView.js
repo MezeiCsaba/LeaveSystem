@@ -23,9 +23,9 @@ var eventList;
 var sumLeave;
 var leaveCounter;
 
-var isFreeLeave = (sumLeave - leaveCounter) >0;
-
-var saved = true;
+//var isFreeLeave = (sumLeave - leaveCounter) >0;
+//
+//var saved = true;
 
 for (let i = 0; i < tables.length; i++) {
     generateCalendar(tables[i], i);
@@ -49,10 +49,12 @@ function generateCalendar(table, month) {
 function generateTableHead(table, month) {
     let head = table.createTHead();
     let row = head.insertRow();
+    let thisMonth = new Date().getMonth();
     row.style.paddingBottom = "1px"
     row.style.fontSize = HEAD_FONT_SIZE
     row.style.textAlign = "center"
     row.style.backgroundColor = "lightblue"
+    row.style.color = (month == thisMonth) ? "brown" : "black"
     let th = document.createElement("th")
     th.colSpan = "7"
     let dateText = ((month==0)? year + ". " : '') + MONTHS[month];
